@@ -20,11 +20,13 @@ X_test = windows_norm[..., np.newaxis]  # shape: (num_windows, 64, 1)
 
 # Step 4: Predict and calculate reconstruction errors
 reconstructed = model.predict(X_test, verbose=0)
-mse = np.mean(np.square(X_test - reconstructed), axis=(1, 2))  # per window
+#mse = np.mean(np.square(X_test - reconstructed), axis=(1, 2))  # per window (mean squared error)
+mae = np.mean(np.abs(X_test - reconstructed), axis=(1, 2)) # per window (mean absolute error)
+
 
 # Step 5: Detect anomalies by threshold
-threshold = np.percentile(mse, 95)  # simple rule: top 5% are anomalies
-anomalous_windows = np.where(mse > threshold)[0]
+threshold = np.percentile(mae, 95)  # simple rule: top 5% are anomalies
+anomalous_windows = np.where(mae > threshold)[0]
 
 # Map window indices to ECG signal indices
 window_size = 64
